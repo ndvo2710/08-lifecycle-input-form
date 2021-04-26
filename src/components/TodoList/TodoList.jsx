@@ -7,9 +7,15 @@ import { TextField } from './components/TextField';
 import { Button } from './components/Button';
 import { Table, Thead, Tr, Th } from './components/Table';
 import { connect } from 'react-redux';
+import { addTaskAction, changeThemeAction } from '../../redux/actions/toDoListActions';
+import { arrTheme } from '../Themes/ThemeManager';
 
 
 class TodoList extends Component {
+    state = {
+        taskName: ''
+    }
+
     renderToDoTask = () => {
         const { taskList } = this.props;
         const toDoTaskList = taskList.filter(task => !task.isCompleted);
@@ -44,19 +50,47 @@ class TodoList extends Component {
         })
     }
 
+    renderTheme = () => {
+        return arrTheme.map((theme, index) => {
+            return <option key={index} value={theme.id}>{theme.name}</option>
+        })
+    }
+
+    handleAddTask = () => {
+        console.log('handleAddTask');
+        let { taskName } = this.state;
+        // Create a task object
+        let newTask = {
+            id: Date.now(),
+            taskName: taskName,
+            isCompleted: false
+        }
+        console.log(newTask)
+
+        // Push task obect to redux via dispatch methoc
+        this.props.dispatch(addTaskAction(newTask))
+
+    }
+
     render() {
         const { theme } = this.props;
         return (
             <ThemeProvider theme={theme}>
                 <Container className="w-50">
-                    <Dropdown>
-                        <option>Dark Theme</option>
-                        <option>Light Theme</option>
-                        <option>Primary Theme</option>
+                    <Dropdown onChange={(e) => {
+                        console.log('changeTheme');
+                        console.log('value', e.target.value);
+                        this.props.dispatch(changeThemeAction(e.target.value));
+                    }}>
+                        {this.renderTheme()}
                     </Dropdown>
                     <Heading3>To do List</Heading3>
-                    <TextField label="Task name" className="w-50" />
-                    <Button className="ml-2"><i className="fa fa-plus"></i> Add task</Button>
+                    <TextField label="Task name" className="w-50" onChange={(e) => {
+                        this.setState({
+                            taskName: e.target.value
+                        })
+                    }} />
+                    <Button onClick={this.handleAddTask} className="ml-2"><i className="fa fa-plus"></i> Add task</Button>
                     <Button className="ml-2"><i className="fa fa-refresh "></i> Update task</Button>
                     <hr />
                     <Heading3>Task to do</Heading3>
@@ -82,8 +116,4 @@ const mapStateToProps = (state) => ({
     ...state.toDoListReducer
 })
 
-const mapDispatchToProps = {
-
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(TodoList);
+export default connect(mapStateToProps)(TodoList);
