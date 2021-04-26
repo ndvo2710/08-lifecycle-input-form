@@ -1,6 +1,11 @@
 import { arrTheme } from "../../components/Themes/ThemeManager";
 
-import { add_task, change_theme } from "../types/toDoListTypes";
+import {
+  add_task,
+  change_theme,
+  delete_task,
+  mark_task_completed
+} from "../types/toDoListTypes";
 
 const initialState = {
   theme: arrTheme[0].theme,
@@ -14,7 +19,7 @@ const initialState = {
 
 const toDoListReducer = (state = initialState, action) => {
   switch (action.type) {
-    case add_task:
+    case add_task: {
       // Check Empty
       if (action.newTask.taskName.trim() === "") {
         alert("Task name is required");
@@ -36,19 +41,47 @@ const toDoListReducer = (state = initialState, action) => {
       state.taskList = taskListUpdate;
 
       return { ...state };
+    }
 
-    case change_theme:
-      console.log("Set Theme Id: ", action.themeId);
+    case change_theme: {
+      //   console.log("Set Theme Id: ", action.themeId);
       //  Reason to use == instead of ===
       // because it tries to match between integer and string .e.g 2 and '2'
       let theme = arrTheme.find(theme => theme.id == action.themeId);
       console.log("theme.id: ", theme.id);
       if (theme) {
-        console.log(theme);
+        // console.log(theme);
         //set theme for state theme
         state.theme = theme.theme;
       }
       return { ...state };
+    }
+
+    case mark_task_completed: {
+      // Check Exist
+      let taskListUpdate = [...state.taskList];
+      let index = taskListUpdate.findIndex(task => task.id === action.taskId);
+      if (index === -1) {
+        alert("Something wrong !");
+        return { ...state };
+      }
+
+      taskListUpdate[index].isCompleted = true;
+      state.taskList = taskListUpdate;
+      return { ...state };
+    }
+
+    case delete_task: {
+      //   let taskListUpdate = [...state.taskList];
+      //   taskListUpdate = taskListUpdate.filter(task => task.id !== action.taskId);
+      //   state.taskList = taskListUpdate;
+      //   return { ...state };
+      return {
+        ...state,
+        taskList: state.taskList.filter(task => task.id !== action.taskId)
+      };
+    }
+
     default:
       return { ...state };
   }

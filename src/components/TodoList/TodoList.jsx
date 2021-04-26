@@ -7,7 +7,7 @@ import { TextField } from './components/TextField';
 import { Button } from './components/Button';
 import { Table, Thead, Tr, Th } from './components/Table';
 import { connect } from 'react-redux';
-import { addTaskAction, changeThemeAction } from '../../redux/actions/toDoListActions';
+import { addTaskAction, changeThemeAction, deleteTask, markTaskAsCompleted } from '../../redux/actions/toDoListActions';
 import { arrTheme } from '../Themes/ThemeManager';
 
 
@@ -24,9 +24,16 @@ class TodoList extends Component {
                 <Tr key={index}>
                     <Th style={{ verticalAlign: 'middle' }}>{todoTask.taskName}</Th>
                     <Th className="text-right">
+                        {/* Update Task Button  */}
                         <Button className="ml-1"><i className="fa fa-edit"></i></Button>
-                        <Button className="ml-1"><i className="fa fa-check"></i></Button>
-                        <Button className="ml-1"><i className="fa fa-trash"></i></Button>
+                        {/* Mark Task Complete Button */}
+                        <Button onClick={() => {
+                            this.props.dispatch(markTaskAsCompleted(todoTask.id))
+                        }} className="ml-1"><i className="fa fa-check"></i></Button>
+                        {/* Delete Task Button  */}
+                        <Button onClick={() => {
+                            this.props.dispatch(deleteTask(todoTask.id))
+                        }} className="ml-1"><i className="fa fa-trash"></i></Button>
 
                     </Th>
                 </Tr>
@@ -42,7 +49,10 @@ class TodoList extends Component {
                 <Tr key={index}>
                     <Th style={{ verticalAlign: 'middle' }}>{completedTask.taskName}</Th>
                     <Th className="text-right">
-                        <Button className="ml-1"><i className="fa fa-trash"></i></Button>
+                        {/* Delete Task Button  */}
+                        <Button onClick={() => {
+                            this.props.dispatch(deleteTask(completedTask.id))
+                        }} className="ml-1"><i className="fa fa-trash"></i></Button>
 
                     </Th>
                 </Tr>
