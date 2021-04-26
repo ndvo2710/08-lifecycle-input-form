@@ -7,7 +7,7 @@ import { TextField } from './components/TextField';
 import { Button } from './components/Button';
 import { Table, Thead, Tr, Th } from './components/Table';
 import { connect } from 'react-redux';
-import { addTaskAction, changeThemeAction, deleteTask, markTaskAsCompleted } from '../../redux/actions/toDoListActions';
+import { addTaskAction, changeThemeAction, deleteTask, editTask, markTaskAsCompleted } from '../../redux/actions/toDoListActions';
 import { arrTheme } from '../Themes/ThemeManager';
 
 
@@ -24,8 +24,10 @@ class TodoList extends Component {
                 <Tr key={index}>
                     <Th style={{ verticalAlign: 'middle' }}>{todoTask.taskName}</Th>
                     <Th className="text-right">
-                        {/* Update Task Button  */}
-                        <Button className="ml-1"><i className="fa fa-edit"></i></Button>
+                        {/* Edit Task Button  */}
+                        <Button onClick={() => {
+                            this.props.dispatch(editTask(todoTask));
+                        }} className="ml-1"><i className="fa fa-edit"></i></Button>
                         {/* Mark Task Complete Button */}
                         <Button onClick={() => {
                             this.props.dispatch(markTaskAsCompleted(todoTask.id))
@@ -83,7 +85,7 @@ class TodoList extends Component {
     }
 
     render() {
-        const { theme } = this.props;
+        const { theme, taskEdit } = this.props;
         return (
             <ThemeProvider theme={theme}>
                 <Container className="w-50">
@@ -95,7 +97,7 @@ class TodoList extends Component {
                         {this.renderTheme()}
                     </Dropdown>
                     <Heading3>To do List</Heading3>
-                    <TextField label="Task name" className="w-50" onChange={(e) => {
+                    <TextField value={taskEdit.taskName} label="Task name" className="w-50" onChange={(e) => {
                         this.setState({
                             taskName: e.target.value
                         })

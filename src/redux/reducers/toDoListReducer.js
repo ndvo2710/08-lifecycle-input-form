@@ -4,6 +4,7 @@ import {
   add_task,
   change_theme,
   delete_task,
+  edit_task,
   mark_task_completed
 } from "../types/toDoListTypes";
 
@@ -14,7 +15,8 @@ const initialState = {
     { id: "task-2", taskName: "task 2", isCompleted: false },
     { id: "task-3", taskName: "task 3", isCompleted: true },
     { id: "task-4", taskName: "task 4", isCompleted: false }
-  ]
+  ],
+  taskEdit: { id: "task-1", taskName: "task 1", done: false }
 };
 
 const toDoListReducer = (state = initialState, action) => {
@@ -79,6 +81,13 @@ const toDoListReducer = (state = initialState, action) => {
       return {
         ...state,
         taskList: state.taskList.filter(task => task.id !== action.taskId)
+      };
+    }
+
+    case edit_task: {
+      return {
+        ...state,
+        taskEdit: action.task
       };
     }
 
