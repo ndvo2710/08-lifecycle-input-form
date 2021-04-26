@@ -13,7 +13,7 @@ import { arrTheme } from '../Themes/ThemeManager';
 
 class TodoList extends Component {
     state = {
-        taskName: ''
+        taskName: '',
     }
 
     renderToDoTask = () => {
@@ -85,7 +85,7 @@ class TodoList extends Component {
     }
 
     render() {
-        const { theme, taskEdit } = this.props;
+        const { theme } = this.props;
         return (
             <ThemeProvider theme={theme}>
                 <Container className="w-50">
@@ -97,7 +97,7 @@ class TodoList extends Component {
                         {this.renderTheme()}
                     </Dropdown>
                     <Heading3>To do List</Heading3>
-                    <TextField value={taskEdit.taskName} label="Task name" className="w-50" onChange={(e) => {
+                    <TextField value={this.state.taskName} label="Task name" className="w-50" onChange={(e) => {
                         this.setState({
                             taskName: e.target.value
                         })
@@ -121,6 +121,14 @@ class TodoList extends Component {
 
             </ThemeProvider>
         )
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        if (prevProps.taskEdit.id !== this.props.taskEdit.id) {
+            this.setState({
+                taskName: this.props.taskEdit.taskName
+            })
+        }
     }
 }
 
